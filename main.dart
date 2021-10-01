@@ -1,31 +1,32 @@
+// @dart=2.9
 import 'package:flutter/material.dart';
 
-void main() => runApp(new MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
+    return MaterialApp(
       title: 'SmartCalc',
-      theme: new ThemeData(
+      theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: new MyHomePage(title: 'Calculator'),
+      home: MyHomePage(),
     );
   }
 }
 
+// ignore: must_be_immutable
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
+  MyHomePage({Key key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => new _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   String output = "0";
 
   String _output = "0";
@@ -33,147 +34,128 @@ class _MyHomePageState extends State<MyHomePage> {
   double num2 = 0.0;
   String operand = "";
 
-  buttonPressed(String buttonText){
-
-    if(buttonText == "C"){
-      
+  buttonPressed(String buttonText) {
+    if (buttonText == "C") {
       _output = "0";
       num1 = 0.0;
       num2 = 0.0;
       operand = "";
-
-    } else if (buttonText == "+" || buttonText == "-" || buttonText == "/" || buttonText == "X"){
-
+    } else if (buttonText == "+" ||
+        buttonText == "-" ||
+        buttonText == "/" ||
+        buttonText == "X") {
       num1 = double.parse(output);
 
       operand = buttonText;
 
       _output = "0";
-
-    } else if(buttonText == "."){
-
-      if(_output.contains(".")){
+    } else if (buttonText == ".") {
+      if (_output.contains(".")) {
         print("Already conatains  decimals");
         return;
-
       } else {
         _output = _output + buttonText;
       }
-
-    } else if (buttonText == "="){
-
+    } else if (buttonText == "=") {
       num2 = double.parse(output);
 
-      if(operand == "+"){
+      if (operand == "+") {
         _output = (num1 + num2).toString();
       }
-      if(operand == "-"){
+      if (operand == "-") {
         _output = (num1 - num2).toString();
       }
-      if(operand == "X"){
+      if (operand == "X") {
         _output = (num1 * num2).toString();
       }
-      if(operand == "/"){
+      if (operand == "/") {
         _output = (num1 / num2).toString();
       }
 
       num1 = 0.0;
       num2 = 0.0;
       operand = "";
-
     } else {
-
       _output = _output + buttonText;
-
     }
 
     print(_output);
 
     setState(() {
-      
       output = double.parse(_output).toStringAsFixed(2);
-
     });
-
   }
-  
+
   Widget buildButton(String buttonText) {
-    return new Expanded(
-      child: new OutlineButton(
-        padding: new EdgeInsets.all(24.0),
-        child: new Text(buttonText,
-          style: TextStyle(
-            fontSize: 20.0,
-            fontWeight: FontWeight.bold
-          ),
-          ),
-        onPressed: () => 
-          buttonPressed(buttonText)
-        ,
+    return Expanded(
+      child: OutlineButton(
+        padding: const EdgeInsets.all(24.0),
+        child: Text(
+          buttonText,
+          style: const TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
+        ),
+        onPressed: () => buttonPressed(buttonText),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-        appBar: new AppBar(
-          title: new Text(widget.title),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          "Calculator",
+          style: TextStyle(fontSize: 27, letterSpacing: 2.3),
         ),
-        body: new Container(
-            child: new Column(
-          children: <Widget>[
-            new Container(
+        backgroundColor: Colors.blue[900],
+      ),
+      body: Column(
+        children: <Widget>[
+          Container(
               alignment: Alignment.centerRight,
-              padding: new EdgeInsets.symmetric(
-                vertical: 24.0,
-                horizontal: 12.0
+              padding:
+                  const EdgeInsets.symmetric(vertical: 24.0, horizontal: 12.0),
+              child: Text(output,
+                  style: const TextStyle(
+                    fontSize: 55.0,
+                    fontWeight: FontWeight.bold,
+                  ))),
+          Expanded(
+            child: Column(children: <Widget>[
+              Center(
+                child: Row(children: [
+                  buildButton("7"),
+                  buildButton("8"),
+                  buildButton("9"),
+                  buildButton("/")
+                ]),
               ),
-              child: new Text(output, style: new TextStyle(
-                fontSize: 48.0,
-                fontWeight: FontWeight.bold,
-                
-              ))),
-            new Expanded(
-              child: new Divider(),
-            ),
-            
-
-            new Column(children: [
-              new Row(children: [
-                buildButton("7"),
-                buildButton("8"),
-                buildButton("9"),
-                buildButton("/")
-              ]),
-
-              new Row(children: [
+              Row(children: [
                 buildButton("4"),
                 buildButton("5"),
                 buildButton("6"),
                 buildButton("X")
               ]),
-
-              new Row(children: [
+              Row(children: [
                 buildButton("1"),
                 buildButton("2"),
                 buildButton("3"),
                 buildButton("-")
               ]),
-
-              new Row(children: [
+              Row(children: [
                 buildButton("."),
                 buildButton("0"),
                 buildButton("00"),
                 buildButton("+")
               ]),
-
-              new Row(children: [
+              Row(children: [
                 buildButton("C"),
                 buildButton("="),
               ])
-            ])
-          ],
-        )));
+            ]),
+          )
+        ],
+      ),
+    );
   }
 }
